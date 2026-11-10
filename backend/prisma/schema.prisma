@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("USER")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  imports      Import[]
+}
+
+model Import {
+  id         String      @id @default(cuid())
+  filename   String
+  importedAt DateTime    @default(now())
+  rowCount   Int         @default(0)
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  months     MonthData[]
+  @@index([userId, importedAt])
+}
+
+model MonthData {
+  id                String @id @default(cuid())
+  importId          String
+  import            Import @relation(fields: [importId], references: [id], onDelete: Cascade)
+  month             Int
+  sales2026         Float  @default(0)
+  sales2025         Float  @default(0)
+  sales2024         Float  @default(0)
+  returns           Float  @default(0)
+  returnPercent     Float  @default(0)
+  netSales          Float  @default(0)
+  cmvSales          Float  @default(0)
+  cmvReturns        Float  @default(0)
+  netCmv            Float  @default(0)
+  profit            Float  @default(0)
+  profitPercent     Float  @default(0)
+  positiveCustomers Int    @default(0)
+  @@unique([importId, month])
+}
