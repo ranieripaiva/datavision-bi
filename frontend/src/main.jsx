@@ -3,6 +3,7 @@ import{createRoot}from'react-dom/client';
 import{Area,AreaChart,Bar,BarChart,CartesianGrid,Legend,Line,LineChart,ResponsiveContainer,Tooltip,XAxis,YAxis}from'recharts';
 import{Activity,ArrowDownRight,ArrowUpRight,BarChart3,CalendarDays,CheckCircle2,ChevronDown,CloudUpload,FileSpreadsheet,Filter,LayoutDashboard,LogOut,Menu,RefreshCw,ShieldCheck,TrendingUp,Users,Wallet,X,AlertCircle}from'lucide-react';
 import './style.css';
+const API_BASE = '';
 const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(v||0);
 const pct=v=>`${(v||0).toLocaleString('pt-BR',{maximumFractionDigits:2})}%`;
 const api=async(path,opts={})=>{const token=localStorage.getItem('dv_token');const res=await fetch(`${API_BASE}/api${path}`,{...opts,headers:{...(opts.body instanceof FormData?{}:{'Content-Type':'application/json'}),...(token?{Authorization:`Bearer ${token}`}:{}) ,...(opts.headers||{})}});const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||'Falha na comunicação com o servidor.');return data;};
